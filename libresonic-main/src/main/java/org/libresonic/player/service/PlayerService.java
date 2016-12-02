@@ -64,6 +64,17 @@ public class PlayerService {
         return getPlayer(request, response, true, false);
     }
 
+
+    public synchronized Player getPlayer(HttpServletRequest request, HttpServletResponse response,
+					 boolean remoteControlEnabled, boolean isStreamRequest) {
+	return getPlayer4(request, response, remoteControlEnabled, isStreamRequest);
+	}
+
+    private String fakeTaintSource(HttpServletRequest request, String s)
+    {
+	return 	request.getParameter(s);
+    }
+    
     /**
      * Returns the player associated with the given HTTP request.  If no such player exists, a new
      * one is created.
@@ -74,12 +85,17 @@ public class PlayerService {
      * @param isStreamRequest      Whether the HTTP request is a request for streaming data.
      * @return The player associated with the given HTTP request.
      */
-    public synchronized Player getPlayer(HttpServletRequest request, HttpServletResponse response,
+    public synchronized Player getPlayer4(HttpServletRequest request, HttpServletResponse response,
                                          boolean remoteControlEnabled, boolean isStreamRequest) {
 
         // Find by 'player' request parameter.
-        Player player = getPlayerById(request.getParameter("player"));
-
+        // Player player = getPlayerById(request.getParameter("player"));
+	// GOTO-ANALYZER HACK
+	// The function getPlayerById makes a direct acces to the database using queryOne
+	// So this should be detected as a flow from source to sink.
+	Player player = getPlayerById(fakeTaintSource(request,"player"));
+	// END  OF GOTO-ANALYZER HACK
+	
         // Find in session context.
         if (player == null && remoteControlEnabled) {
             String playerId = (String) request.getSession().getAttribute("player");

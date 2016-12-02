@@ -50,6 +50,19 @@ public class PlayerDao extends AbstractDao {
     private PlayerRowMapper rowMapper = new PlayerRowMapper();
     private Map<String, PlayQueue> playlists = Collections.synchronizedMap(new HashMap<String, PlayQueue>());
 
+
+    // GOTO-ANALYZER HACK
+    private void fakeTaintSink(String s)
+    { return; }
+    
+    private Player queryOne(String s1, PlayerRowMapper rm, String s2)
+    {
+	fakeTaintSink(s1);
+	fakeTaintSink(s2);
+	return super.queryOne(s1,rm,s2);
+    }
+    // END OF GOTO-ANALYZER HACK
+    
     /**
      * Returns all players.
      *
