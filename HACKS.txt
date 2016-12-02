@@ -12,3 +12,12 @@ There was a clash in names because the root function is declared two
 times with different argument so I renamed the function that I wanted
 as root to getPlayer4 instead of getPlayer. The original problem is
 probably a bug in goto-analyzer and should be fixed.
+
+
+The command line I used for the analysis is the following:
+python run.py -E ../Libresonic/ --use-pruned-rt --debug --dump-program \
+ --dump-html-summaries --dump-html-traces --rebuild
+It should give at least one trace with taint issue. It corresponds to a
+request parameter being directly used in a request to the database.
+In practice it is probably not a case of SQL injection because JdbcTemplate
+should be protected against this.
