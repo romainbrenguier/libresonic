@@ -1,4 +1,4 @@
-Three things where alterated for the taint analysis:
+Three things where altered for the taint analysis:
 
 To get sources I introduced a function fakeTaintSource which just calls
 getParameter. Declaring getParameter as a source doesn't work right away
