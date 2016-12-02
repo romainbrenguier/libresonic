@@ -1,0 +1,14 @@
+Three things where alterated for the taint analysis:
+
+To get sources I introduced a function fakeTaintSource which just calls
+getParameter. Declaring getParameter as a source doesn't work right away
+but it is easy to fix in goto-analyser.
+
+To get sink I introduced a function fakeTaintSink and replaced queryOne
+by a function that calls fakeTaintSink on its arguments and then calls
+query One. This is also something easy to fix.
+
+There was a clash in names because the root function is declared two
+times with different argument so I renamed the function that I wanted
+as root to getPlayer4 instead of getPlayer. The original problem is
+probably a bug in goto-analyzer and should be fixed.
